@@ -96,16 +96,31 @@ Open terminal or PowerShell in this directory:
 python restaurant_system.py
 ```
 
-### 2. Run Automated Verification Test Suite
+### 2. Run Automated Verification Test Suite (All 4 Test Cases)
 ```bash
 python test_cases_runner.py
+# or directly:
+python restaurant_system.py --test
 ```
 
-### 3. Regenerate Visual Screenshots
+### 3. Launch Web POS Frontend Dashboard (Browser UI)
+```bash
+python app.py
+```
+Open **`http://127.0.0.1:5000`** in your browser to access the full visual POS system, visual table selector (1-20), menu cards, and test execution buttons.
+
+### 4. Regenerate Visual Screenshots
 ```bash
 python generate_screenshots.py
 ```
 Screenshots will be saved in the `screenshots/` directory.
+
+### 5. Running in VS Code
+1. Open this folder in VS Code: `code "E:\python project resturent order management system"`
+2. Press **`F5`** or go to the **Run & Debug (Ctrl+Shift+D)** panel to choose:
+   - `Python: Interactive Restaurant Console (restaurant_system.py)`
+   - `Python: Run All 4 Test Cases (test_cases_runner.py)`
+   - `Python: Launch Web Frontend Dashboard (app.py)`
 
 ---
 
