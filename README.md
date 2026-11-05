@@ -25,10 +25,16 @@ A robust, console-based Restaurant Order Management and Billing System developed
 E:\python project resturent order management system\
 │
 ├── restaurant_system.py          # Core console application (Single .py file)
+├── app.py                        # Web POS Frontend Dashboard (Flask UI)
 ├── test_cases_runner.py          # Automated verification suite (All 4 test cases)
 ├── generate_screenshots.py       # High-definition terminal screenshot generator
+├── run_website.bat               # 1-Click launcher for Web POS Dashboard
+├── run_console.bat               # 1-Click launcher for Waiter Console
+├── run_tests.bat                 # 1-Click launcher for Test Runner
 ├── README.md                     # Project documentation & execution guide
+├── summary.md                    # Quick executive summary & verification table
 ├── PROJECT_REPORT.md             # Formal college submission report
+├── .vscode/                      # VS Code launch & settings configurations
 └── screenshots\                  # Captured visual proof of passing test cases
     ├── testcase_1_normal_input.png
     ├── testcase_2_boundary_min_input.png

@@ -726,9 +726,25 @@ def api_run_test(test_id):
 
 
 if __name__ == "__main__":
+    import threading
+    import webbrowser
+    import time
+
     port = int(os.environ.get("PORT", 5000))
+    url = f"http://127.0.0.1:{port}"
+
     print(f"\n==================================================")
     print(f" RESTAURANT ORDER MANAGEMENT SYSTEM - WEB DASHBOARD")
-    print(f" Running at: http://127.0.0.1:{port}")
+    print(f" Server running at: {url}")
+    print(f" Opening browser automatically...")
     print(f"==================================================\n")
-    app.run(host="0.0.0.0", port=port, debug=False)
+
+    def launch_browser():
+        time.sleep(1.2)
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+
+    threading.Thread(target=launch_browser, daemon=True).start()
+    app.run(host="127.0.0.1", port=port, debug=False)
