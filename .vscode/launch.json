@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Interactive Restaurant Console (restaurant_system.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/restaurant_system.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Run All 4 Test Cases (test_cases_runner.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/test_cases_runner.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Launch Web Frontend Dashboard (app.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/app.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Automated Tests (restaurant_system.py --test)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/restaurant_system.py",
+      "args": ["--test"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
