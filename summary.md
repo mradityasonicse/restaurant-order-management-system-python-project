@@ -2,17 +2,13 @@
 **Bachelor of Technology – Computer Science and Engineering**  
 **Problem Statement (PS) No.: 35**  
 **Project Title**: Restaurant Order Management System  
-**Language**: Python 3  
+**Language**: Python 3 (Single `.py` file)  
 **Concepts**: Lists, Dictionaries, Loops, Input Validation, Tax & Billing Computations  
 
 ---
 
 ## 📌 Executive Summary
-The **Restaurant Order Management System** is a software solution engineered to streamline waiter ordering operations, table tracking, running order monitoring, and automated tax billing in a multi-table dining restaurant.
-
-The system features **dual-interface execution**:
-1. **Core Single-File Console Application (`restaurant_system.py`)**: Fulfills 100% of the academic bare minimum requirements.
-2. **Interactive Web POS Dashboard (`app.py`)**: A modern browser-based point-of-sale interface running locally at `http://127.0.0.1:5000` with visual tables, menu cards, and one-click test verification.
+The **Restaurant Order Management System** is a standalone, single-file Python application engineered to satisfy all requirements of Problem Statement 35. It handles waiter ordering workflows, multi-table tracking, running order monitoring, and automated tax billing with 10% Service Charge and 5% GST.
 
 ---
 
@@ -31,7 +27,7 @@ The system features **dual-interface execution**:
 
 ## 📋 Requirements Compliance Matrix
 
-| # | Requirement | Implementation in Code | Verification Status |
+| # | Requirement | Implementation in `restaurant_system.py` | Verification Status |
 |:---:|---|---|:---:|
 | **1** | Write solution in Python 3 (one `.py` file) and run from console | Self-contained in `restaurant_system.py` | ✅ 100% Passed |
 | **2** | Keep menu in a dictionary & table orders in a list | `MENU = {"Burger": 100, ...}`<br>`table_orders = {t: [] for t in range(1, 21)}` | ✅ 100% Passed |
@@ -45,7 +41,7 @@ The system features **dual-interface execution**:
 
 All 4 test cases specified in the project problem statement have been executed and verified:
 
-```
+```text
 ================================================================================
    BACHELOR OF TECHNOLOGY - COMPUTER SCIENCE AND ENGINEERING
    PS No. 35: RESTAURANT ORDER MANAGEMENT SYSTEM - VERIFICATION SUITE
@@ -56,7 +52,7 @@ All 4 test cases specified in the project problem statement have been executed a
 - **Input**: Table: `5`, Item: `Burger`, Quantity: `2`
 - **Expected Output**: `Burger x2 added to Table 5 | Amount: 200`
 - **Actual Output**: `Burger x2 added to Table 5 | Amount: 200`
-- **Result**: **PASS (100% Match)**
+- **Result**: **PASS (100% Match — Amount is Rs. 200)**
 
 ### Test Case 2: Boundary / Minimum Input
 - **Input**: Table: `1`, Item: `Coffee`, Quantity: `1` $\rightarrow$ Generate bill
@@ -87,40 +83,10 @@ All 4 test cases specified in the project problem statement have been executed a
 
 ---
 
-## 📁 Project Files & Artifacts
+## 📁 Repository Structure
 
-| File / Folder | Purpose |
+| File | Purpose |
 |---|---|
-| [`restaurant_system.py`](file:///E:/python%20project%20resturent%20order%20management%20system/restaurant_system.py) | Main standalone console script with menu, validation, and billing |
-| [`app.py`](file:///E:/python%20project%20resturent%20order%20management%20system/app.py) | Modern Flask Web POS dashboard with auto-opening browser |
-| [`test_cases_runner.py`](file:///E:/python%20project%20resturent%20order%20management%20system/test_cases_runner.py) | Standalone automated verification runner for all 4 test cases |
-| [`generate_screenshots.py`](file:///E:/python%20project%20resturent%20order%20management%20system/generate_screenshots.py) | Script to generate pixel-perfect PNG terminal proofs |
-| [`README.md`](file:///E:/python%20project%20resturent%20order%20management%20system/README.md) | Full technical documentation and operational guide |
-| [`PROJECT_REPORT.md`](file:///E:/python%20project%20resturent%20order%20management%20system/PROJECT_REPORT.md) | Academic college report with flowcharts and complexity analysis |
-| [`run_website.bat`](file:///E:/python%20project%20resturent%20order%20management%20system/run_website.bat) | 1-Click double-clickable batch launcher for Web POS Dashboard |
-| [`run_console.bat`](file:///E:/python%20project%20resturent%20order%20management%20system/run_console.bat) | 1-Click double-clickable batch launcher for Waiter Console |
-| [`run_tests.bat`](file:///E:/python%20project%20resturent%20order%20management%20system/run_tests.bat) | 1-Click double-clickable batch launcher for Verification Suite |
-| [`screenshots/`](file:///E:/python%20project%20resturent%20order%20management%20system/screenshots) | High-definition PNG images of all 4 test case runs |
-
----
-
-## 🚀 How to Run Quick Reference
-
-1. **Launch Web POS Website:**
-   - Double-click `run_website.bat` OR run:
-     ```bash
-     python app.py
-     ```
-   - Open browser at: **`http://127.0.0.1:5000`**
-
-2. **Launch Waiter Console:**
-   - Double-click `run_console.bat` OR run:
-     ```bash
-     python restaurant_system.py
-     ```
-
-3. **Run Automated Test Cases:**
-   - Double-click `run_tests.bat` OR run:
-     ```bash
-     python test_cases_runner.py
-     ```
+| [`restaurant_system.py`](file:///E:/python%20project%20resturent%20order%20management%20system/restaurant_system.py) | Main standalone console script with menu, validation, loops, billing, and test suite |
+| [`README.md`](file:///E:/python%20project%20resturent%20order%20management%20system/README.md) | Full technical documentation and execution guide |
+| [`summary.md`](file:///E:/python%20project%20resturent%20order%20management%20system/summary.md) | Executive summary, business rules, and verification matrix |
