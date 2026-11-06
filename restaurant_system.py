@@ -509,6 +509,11 @@ def run_all_tests_auto():
     print("=" * 75)
     print(f" FINAL RESULT: {passed}/4 TEST CASES PASSED SUCCESSFULLY (100%)")
     print("=" * 75 + "\n")
+
+    # Clear all tables after running tests to avoid state pollution
+    for t in range(1, TOTAL_TABLES + 1):
+        reset_table(t)
+
     return passed == 4
 
 
@@ -680,25 +685,37 @@ def take_order_for_table(table_num: int):
             print(f"Table {table_num} has no active orders to bill.")
 
 
-def waiter_console():
+def waiter_console(show_tests_on_startup: bool = True):
     """
     Main interactive entry point for the console application.
     Fulfills Requirement 1 (one .py file run from console).
-    Takes user's manual inputs, validates them defensively, and runs orders.
+    Displays the 4 official test cases verification on startup,
+    then takes user's manual inputs, validates them defensively, and runs orders.
     """
-    print("\n" + "=" * 65)
-    print("   WELCOME TO RESTAURANT ORDER MANAGEMENT SYSTEM (PS No. 35)   ")
-    print("=" * 65)
+    print("\n" + "=" * 75)
+    print("      PROBLEM STATEMENT NO. 35: RESTAURANT ORDER MANAGEMENT SYSTEM      ")
+    print("           Bachelor of Technology - Computer Science and Engineering     ")
+    print("=" * 75)
     print("Menu: Burger (Rs. 100) | Pizza (Rs. 200) | Coffee (Rs. 50)")
-    print("Tables: 1 to 20 | Service Charge: 10% | GST: 5%")
-    print("=" * 65)
+    print("Tables: 1 to 20 | Service Charge: 10% | GST: 5% (both on Subtotal)")
+    print("=" * 75)
+
+    if show_tests_on_startup:
+        print("\n" + "-" * 75)
+        print("          OFFICIAL TEST CASES VERIFICATION (PROBLEM STATEMENT 35)       ")
+        print("-" * 75)
+        run_all_tests_auto()
+
     display_menu()
 
-    print("\n[INSTRUCTIONS]")
-    print("  * Enter a Table Number (1-20) to start placing orders on YOUR input")
-    print("  * Type 'test' to run Test Cases (1 to 4) on your own input")
-    print("  * Type 'all' to run the automated verification suite")
-    print("  * Type 'exit' to quit\n")
+    print("\n" + "=" * 75)
+    print("       LIVE INTERACTIVE WAITER CONSOLE (TEST ON YOUR CUSTOM INPUT)      ")
+    print("=" * 75)
+    print("Instructions:")
+    print("  * Enter a Table Number (1-20) to take orders on YOUR input")
+    print("  * Enter 'bill' to generate final receipt with 10% Service Charge + 5% GST")
+    print("  * Enter 'test' to re-run test case verification")
+    print("  * Enter 'exit' to quit application\n")
 
     while True:
         try:
