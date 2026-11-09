@@ -40,11 +40,7 @@ The system handles daily restaurant table management, order taking, running orde
 restaurant-order-management-system/
 ├── restaurant_system.py       # Main Python 3 application & test runner
 ├── README.md                  # Project overview & running instructions
-├── summary.md                 # Academic project report & technical summary
-├── test_case_1.png            # Test Case 1 terminal execution screenshot
-├── test_case_2.png            # Test Case 2 terminal execution screenshot
-├── test_case_3.png            # Test Case 3 terminal execution screenshot
-├── test_case_4.png            # Test Case 4 terminal execution screenshot
+├── summary.md                 # Academic project report & test runs
 └── .gitignore                 # Standard Python gitignore
 ```
 
