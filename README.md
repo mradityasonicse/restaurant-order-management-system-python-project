@@ -51,52 +51,24 @@ restaurant-order-management-system/
 ### Requirements
 * Python 3.7 or newer (Standard library only; no pip dependencies required).
 
-### 1. Interactive Waiter Console
-Run the main script directly:
+### Execution
+Run the script from the terminal:
 ```bash
 python restaurant_system.py
 ```
+
 From the interactive console:
-* Enter a table number (e.g., `5`) to start taking orders.
-* Enter food item (e.g., `Burger`) and quantity (e.g., `2`).
-* Type `view` to check the running bill at any time.
-* Type `bill` to print the final receipt with Service Charge & GST and release the table.
-* Type `test` to open the test case runner.
+* Enter a table number (e.g. `5`) to select a table.
+* Enter menu item name (e.g. `Burger`) or number (`1`, `2`, `3`) and quantity.
+* Type `view` or `order` to inspect the running order.
+* Type `bill` to compute the total with 10% Service Charge + 5% GST and print the receipt.
 * Type `exit` to quit.
-
-### 2. Run Test Cases
-Run all 4 verification test cases in automated mode:
-```bash
-python restaurant_system.py --test
-```
-
-You can also run any specific test case:
-```bash
-python restaurant_system.py --test 1    # Test Case 1: Normal input
-python restaurant_system.py --test 2    # Test Case 2: Boundary input
-python restaurant_system.py --test 3    # Test Case 3: Invalid input handling
-python restaurant_system.py --test 4    # Test Case 4: Multi-item scenario
-```
 
 ---
 
 ## Test Verification
 
-All 4 test cases pass with exact expected outputs:
-
-```text
-PS E:\python project resturent order management system> python restaurant_system.py --test
-===========================================================================
-  PS No. 35: RESTAURANT ORDER MANAGEMENT SYSTEM - VERIFICATION SUITE
-===========================================================================
-[TEST CASE 1] Normal Input        -> [PASS] (Burger x2 added to Table 5 │ Amount: 200)
-[TEST CASE 2] Boundary Input      -> [PASS] (Subtotal: 50 │ Service charge: 5.00 │ GST: 2.50 │ Total: 57.50)
-[TEST CASE 3] Invalid Validation  -> [PASS] (Rejected unknown item, invalid quantity, and table 0)
-[TEST CASE 4] Multi-Item Scenario -> [PASS] (Burger x2, Pizza x1, Coffee x4 │ Total: 690.00)
-===========================================================================
- FINAL RESULT: 4/4 TEST CASES PASSED SUCCESSFULLY (100%)
-===========================================================================
-```
+The application handles all official test scenarios directly through the console:
 
 ### Summary of Test Scenarios
 
