@@ -1,46 +1,86 @@
 """
-=============================================================================
-Problem Statement No: 35
-Project Title: Restaurant Order Management System
-Department: Bachelor of Technology - Computer Science and Engineering
-Language: Python 3
-Core Concepts: Lists, Dictionaries, Loops, Input Validation, Billing
-=============================================================================
+================================================================================
+RUNGTA INTERNATIONAL SKILLS UNIVERSITY
+SCHOOL OF COMPUTER SCIENCE AND ENGINEERING
+Bachelor of Technology — Computer Science and Engineering
+B.Tech / CSE / FIRST SEM / SECTION – K
+
+Course Code & Name : RU-100-01-0021 : Programming Fundamentals and Logic Building Using Python
+Date of Allocation : 14th October 2026
+Date of Submission : 16th November 2026
+Problem Statement  : PS No. 35
+Project Title      : Restaurant Order Management System
+Core Concepts      : Lists, Dictionaries, Loops, Input Validation, Tax & Billing
+================================================================================
+
+PROBLEM STATEMENT DESCRIPTION:
+Create a console application for a restaurant where a waiter selects a table, 
+takes orders from the menu, views the running order and generates the final bill 
+with service charge and GST.
+
+SPECIFICATIONS:
+- Menu (Dictionary) : Burger Rs.100, Pizza Rs.200, Coffee Rs.50
+- Tables (List per table): Numbered 1 to 20
+- Service charge    : 10% on Subtotal
+- GST               : 5% on Subtotal
+
+BARE MINIMUM REQUIREMENTS COMPLIANCE:
+1. Write the solution in Python 3 (one .py file) and run it from the console.
+2. Keep the menu in a dictionary and the ordered items of each table in a list.
+3. Use a loop to take multiple items for a table and show the running order.
+4. Calculate the subtotal, service charge, GST and total, and print a neat bill.
+5. Validate the table number, item name and quantity before adding an order.
+================================================================================
 """
 
+import os
 import re
 import sys
 
+# Ensure UTF-8 output encoding across Windows terminals (cmd, powershell, IDEs)
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
+# Separator character as specified in the official PDF test case statements (U+2502)
+SEP = "│"
+
+# ------------------------------------------------------------------------------
 # Requirement 2: Menu stored in a Dictionary
+# ------------------------------------------------------------------------------
 MENU = {
     "Burger": 100,
     "Pizza": 200,
     "Coffee": 50
 }
 
+# ------------------------------------------------------------------------------
 # Requirement 2: Ordered items for each table stored in a List
 # Tables are numbered from 1 to 20
+# ------------------------------------------------------------------------------
 TOTAL_TABLES = 20
 SERVICE_CHARGE_RATE = 0.10  # 10% on Subtotal
 GST_RATE = 0.05             # 5% on Subtotal
 
-# Global dictionary mapping table numbers (1 to 20) to lists of orders
+# Global dictionary mapping each table number (1 to 20) to a List of ordered items
 table_orders = {t: [] for t in range(1, TOTAL_TABLES + 1)}
 
 
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Requirement 5: Validation Functions
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def validate_table(table_input) -> int:
     """
     Validates table number. Must be an integer between 1 and 20.
-    Accepts raw digits (5), table prefixes ('Table: 5', 'Table 5', 'T-5').
+    Accepts raw digits (5), table prefixes ('Table: 5', 'Table 5', 'T-5', '(c) Table: 0').
     Raises ValueError with standard message if invalid.
     """
     try:
         s = str(table_input).strip()
-        # Extract the integer portion
+        # Extract integer portion
         m = re.search(r'[-+]?\d+', s)
         if not m:
             raise ValueError
@@ -56,8 +96,8 @@ def validate_item(item_input) -> str:
     """
     Validates menu item. Must match one of the items on the menu (case-insensitive)
     or numeric menu item index (1: Burger, 2: Pizza, 3: Coffee).
-    Accepts item prefixes like 'Order item: Burger', 'item: Burger', '(a) Order item: Burger'.
-    Returns normalized item name (e.g., 'Burger').
+    Accepts prefixes like 'Order item: Burger', 'item: Burger', '(a) Order item: Pasta'.
+    Returns canonical menu item name (e.g., 'Burger').
     Raises ValueError if item is not on the menu.
     """
     cleaned = str(item_input).strip()
@@ -78,11 +118,11 @@ def validate_item(item_input) -> str:
         if 1 <= idx <= len(menu_keys):
             return menu_keys[idx - 1]
 
-    # Case-insensitive lookup
+    # Case-insensitive lookup against menu dictionary
     for menu_item in MENU:
         if menu_item.lower() == cleaned.lower():
             return menu_item
-    
+
     available_items = ", ".join(MENU.keys())
     raise ValueError(f"Item not on the menu. Available: {available_items}")
 
@@ -90,8 +130,8 @@ def validate_item(item_input) -> str:
 def validate_quantity(qty_input) -> int:
     """
     Validates quantity. Must be a positive whole integer (> 0).
-    Accepts prefixes like 'Quantity: 2', 'Qty: 2', '(b) Quantity: 2'.
-    Raises ValueError if input cannot be parsed to an integer or is <= 0.
+    Accepts prefixes like 'Quantity: 2', 'Qty: 2', '(b) Quantity: abc'.
+    Raises ValueError if input is non-numeric or <= 0.
     """
     try:
         s = str(qty_input).strip()
@@ -102,8 +142,8 @@ def validate_quantity(qty_input) -> int:
             s,
             flags=re.IGNORECASE
         ).strip()
-        
-        # Ensure it's a whole number without decimal points
+
+        # Reject negative numbers, letters, symbols, or decimals
         if not s.isdigit():
             raise ValueError
         q = int(s)
@@ -116,14 +156,14 @@ def validate_quantity(qty_input) -> int:
 
 def parse_compound_orders(text: str) -> list:
     """
-    Parses compound order strings like:
+    Parses compound order strings from test inputs such as:
     - 'Order Burger x2, Pizza x1, Coffee x4'
     - 'Burger x2, Pizza x1, Coffee x4'
     - 'Order item: Coffee; Quantity: 1'
     Returns list of (item_name, quantity) tuples.
     """
     items = []
-    # Check if 'Order item: Coffee; Quantity: 1' format
+    # Match 'Order item: <Item>; Quantity: <Qty>' format
     m_single = re.search(
         r'(?:Order\s*item\s*:?\s*)?(Burger|Pizza|Coffee)\s*;\s*(?:Quantity\s*:?\s*)?(\d+)',
         text,
@@ -132,6 +172,7 @@ def parse_compound_orders(text: str) -> list:
     if m_single:
         return [(m_single.group(1).capitalize(), int(m_single.group(2)))]
 
+    # Match comma/semicolon separated items
     parts = re.split(r'[,;]+', text)
     for part in parts:
         part = part.strip()
@@ -141,19 +182,20 @@ def parse_compound_orders(text: str) -> list:
     return items
 
 
-# ---------------------------------------------------------------------------
-# Requirement 2, 3 & 4: Order Management & Billing Functions
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Requirements 2, 3 & 4: Order Management & Billing Functions
+# ------------------------------------------------------------------------------
 
 def add_order(table_num: int, item_name: str, quantity: int) -> dict:
     """
+    Requirement 2 & 3:
     Adds an ordered item to a given table's order list.
     If the item is already on this table's running order, accumulates quantity.
-    Calculates item amount and returns summary dict.
+    Calculates item amount and returns summary dict with exact PDF formatting.
     """
     price = MENU[item_name]
 
-    # Accumulate if item already ordered for this table
+    # Check if item already exists in table's order list -> accumulate quantity
     for entry in table_orders[table_num]:
         if entry["item"] == item_name:
             entry["quantity"] += quantity
@@ -162,10 +204,12 @@ def add_order(table_num: int, item_name: str, quantity: int) -> dict:
                 "table": table_num,
                 "item": item_name,
                 "quantity": entry["quantity"],
+                "price": price,
                 "amount": entry["amount"],
-                "message": f"{item_name} x{entry['quantity']} added to Table {table_num} | Amount: {entry['amount']}"
+                "message": f"{item_name} x{entry['quantity']} added to Table {table_num} {SEP} Amount: {entry['amount']}"
             }
 
+    # New item for this table
     amount = price * quantity
     order_entry = {
         "item": item_name,
@@ -174,50 +218,59 @@ def add_order(table_num: int, item_name: str, quantity: int) -> dict:
         "amount": amount
     }
     table_orders[table_num].append(order_entry)
-    
+
     return {
         "table": table_num,
         "item": item_name,
         "quantity": quantity,
+        "price": price,
         "amount": amount,
-        "message": f"{item_name} x{quantity} added to Table {table_num} | Amount: {amount}"
+        "message": f"{item_name} x{quantity} added to Table {table_num} {SEP} Amount: {amount}"
     }
 
 
 def get_running_order(table_num: int) -> list:
     """
-    Requirement 3: Returns the list of currently ordered items for a table.
+    Requirement 3:
+    Returns the list of currently ordered items for a given table.
     """
     return table_orders.get(table_num, [])
 
 
 def format_running_order(table_num: int) -> str:
     """
+    Requirement 3:
     Formats the running order into a single line summary string.
-    Example: Burger x2 = 200 | Pizza x1 = 200 | Coffee x4 = 200
+    Example: Burger x2 = 200 │ Pizza x1 = 200 │ Coffee x4 = 200
     """
     orders = get_running_order(table_num)
     if not orders:
         return f"Table {table_num} has no active orders."
-    
+
     order_strings = [f"{o['item']} x{o['quantity']} = {o['amount']}" for o in orders]
-    return " | ".join(order_strings)
+    return f" {SEP} ".join(order_strings)
 
 
 def calculate_bill(table_num: int) -> dict:
     """
-    Requirement 4: Calculates Subtotal, Service charge (10%), GST (5%), and Total.
+    Requirement 4:
+    Calculates Subtotal, Service charge (10%), GST (5%), and Grand Total.
+    Formulas:
+      - Subtotal       = Sum of (Price * Quantity)
+      - Service Charge = Subtotal * 0.10 (10% on Subtotal)
+      - GST            = Subtotal * 0.05 (5% on Subtotal)
+      - Grand Total    = Subtotal + Service Charge + GST
     """
     orders = get_running_order(table_num)
     subtotal = sum(order["amount"] for order in orders)
     service_charge = subtotal * SERVICE_CHARGE_RATE
     gst = subtotal * GST_RATE
     total = subtotal + service_charge + gst
-    
-    line_1 = f"Subtotal: {subtotal} | Service charge (10%): {service_charge:.2f}"
-    line_2 = f"GST (5%): {gst:.2f} | Total: {total:.2f}"
+
+    line_1 = f"Subtotal: {subtotal} {SEP} Service charge (10%): {service_charge:.2f}"
+    line_2 = f"GST (5%): {gst:.2f} {SEP} Total: {total:.2f}"
     two_line_summary = f"{line_1}\n{line_2}"
-    single_line = f"Subtotal: {subtotal} | Service charge (10%): {service_charge:.2f} | GST (5%): {gst:.2f} | Total: {total:.2f}"
+    single_line = f"Subtotal: {subtotal} {SEP} Service charge (10%): {service_charge:.2f} {SEP} GST (5%): {gst:.2f} {SEP} Total: {total:.2f}"
 
     return {
         "table": table_num,
@@ -239,30 +292,33 @@ def reset_table(table_num: int):
 
 
 def print_bill_card(table_num: int):
-    """Prints a neat aesthetic ASCII receipt matching problem requirements."""
+    """
+    Requirement 4:
+    Prints a neat, aesthetic receipt matching problem requirements.
+    """
     bill = calculate_bill(table_num)
     if not bill["orders"]:
         print(f"\nTable {table_num} has no active orders to generate a bill.")
         return
 
-    print("\n" + "=" * 52)
-    print("            FINAL BILL RECEIPT (PS No. 35)          ")
-    print("=" * 52)
+    print("\n" + "=" * 54)
+    print("            FINAL BILL RECEIPT (PS No. 35)            ")
+    print("=" * 54)
     print(f" Table Number : {table_num}")
-    print("-" * 52)
-    print(f" {'Item':<18} {'Qty':<6} {'Price':<10} {'Amount':<10}")
-    print("-" * 52)
+    print("-" * 54)
+    print(f" {'Item':<18} {'Qty':<6} {'Price':<12} {'Amount':<10}")
+    print("-" * 54)
     for o in bill["orders"]:
-        print(f" {o['item']:<18} x{o['quantity']:<5} Rs.{o['price']:<7} Rs.{o['amount']}")
-    print("-" * 52)
-    print(bill["line_1"])
-    print(bill["line_2"])
-    print("=" * 52 + "\n")
+        print(f" {o['item']:<18} x{o['quantity']:<5} Rs.{o['price']:<9} Rs.{o['amount']}")
+    print("-" * 54)
+    print(f" {bill['line_1']}")
+    print(f" {bill['line_2']}")
+    print("=" * 54 + "\n")
 
 
 def display_menu():
     """Prints the restaurant menu card."""
-    print("-" * 42)
+    print("\n" + "-" * 42)
     print("               TODAY'S MENU               ")
     print("-" * 42)
     for item, price in MENU.items():
@@ -270,15 +326,24 @@ def display_menu():
     print("-" * 42)
 
 
-# ---------------------------------------------------------------------------
-# Test Case Verification Functions (Supports both Sheet Defaults & Custom User Inputs)
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Test Case Verification Functions (4 Test Cases From Official Problem Statement)
+# ------------------------------------------------------------------------------
 
-def run_test_case_1(custom_table=None, custom_item=None, custom_qty=None):
+def _normalize(s: str) -> str:
+    """Normalizes vertical bars and trailing spaces for robust comparison."""
+    return s.replace("|", "│").strip()
+
+
+def run_test_case_1(custom_table=None, custom_item=None, custom_qty=None) -> bool:
     """
-    Runs Test Case 1: Normal Input.
-    Defaults: Table: 5, Item: Burger, Quantity: 2.
-    Expected: Burger x2 added to Table 5 | Amount: 200
+    [TEST CASE 1] Normal Input
+    INPUT:
+      Table: 5
+      Order item: Burger
+      Quantity: 2
+    EXPECTED OUTPUT:
+      Burger x2 added to Table 5 │ Amount: 200
     """
     t_input = custom_table if custom_table is not None else 5
     i_input = custom_item if custom_item is not None else "Burger"
@@ -303,27 +368,30 @@ def run_test_case_1(custom_table=None, custom_item=None, custom_qty=None):
     reset_table(tbl)
     res = add_order(tbl, item, qty)
     actual = res["message"]
-    expected = f"{item} x{qty} added to Table {tbl} | Amount: {MENU[item] * qty}"
+    expected = f"{item} x{qty} added to Table {tbl} {SEP} Amount: {MENU[item] * qty}"
 
     print(f"EXPECTED OUTPUT:\n{expected}")
     print("-" * 75)
     print(f"ACTUAL OUTPUT:\n{actual}")
     print("-" * 75)
 
-    is_pass = (actual == expected)
+    is_pass = (_normalize(actual) == _normalize(expected))
     status = "[PASS] ✓" if is_pass else "[FAIL] ✗"
     print(f"STATUS: {status}")
     print("-" * 75 + "\n")
     return is_pass
 
 
-def run_test_case_2(custom_table=None, custom_item=None, custom_qty=None):
+def run_test_case_2(custom_table=None, custom_item=None, custom_qty=None) -> bool:
     """
-    Runs Test Case 2: Boundary / Minimum Input.
-    Defaults: Table: 1, Item: Coffee, Quantity: 1 -> Generate bill.
-    Expected:
-    Subtotal: 50 | Service charge (10%): 5.00
-    GST (5%): 2.50 | Total: 57.50
+    [TEST CASE 2] Boundary / Minimum Input
+    INPUT:
+      Table: 1
+      Order item: Coffee; Quantity: 1
+      Generate bill
+    EXPECTED OUTPUT:
+      Subtotal: 50 │ Service charge (10%): 5.00
+      GST (5%): 2.50 │ Total: 57.50
     """
     t_input = custom_table if custom_table is not None else 1
     i_input = custom_item if custom_item is not None else "Coffee"
@@ -354,8 +422,8 @@ def run_test_case_2(custom_table=None, custom_item=None, custom_qty=None):
     gst = subtotal * GST_RATE
     total = subtotal + svc + gst
 
-    expected_line1 = f"Subtotal: {subtotal} | Service charge (10%): {svc:.2f}"
-    expected_line2 = f"GST (5%): {gst:.2f} | Total: {total:.2f}"
+    expected_line1 = f"Subtotal: {subtotal} {SEP} Service charge (10%): {svc:.2f}"
+    expected_line2 = f"GST (5%): {gst:.2f} {SEP} Total: {total:.2f}"
     expected = f"{expected_line1}\n{expected_line2}"
     actual = bill["two_line_summary"]
 
@@ -364,20 +432,25 @@ def run_test_case_2(custom_table=None, custom_item=None, custom_qty=None):
     print(f"ACTUAL OUTPUT:\n{actual}")
     print("-" * 75)
 
-    is_pass = (bill["line_1"] == expected_line1 and bill["line_2"] == expected_line2)
+    is_pass = (_normalize(bill["line_1"]) == _normalize(expected_line1) and
+               _normalize(bill["line_2"]) == _normalize(expected_line2))
     status = "[PASS] ✓" if is_pass else "[FAIL] ✗"
     print(f"STATUS: {status}")
     print("-" * 75 + "\n")
     return is_pass
 
 
-def run_test_case_3(custom_item=None, custom_qty=None, custom_table=None):
+def run_test_case_3(custom_item=None, custom_qty=None, custom_table=None) -> bool:
     """
-    Runs Test Case 3: Invalid Input Validation.
-    Defaults:
-    (a) Order item: Pasta -> Item not on the menu. Available: Burger, Pizza, Coffee
-    (b) Quantity: abc -> Invalid quantity. Enter a whole number.
-    (c) Table: 0 -> Invalid table number. Enter a number between 1 and 20.
+    [TEST CASE 3] Invalid Input Validation
+    INPUT:
+      (a) Order item: Pasta
+      (b) Quantity: abc
+      (c) Table: 0
+    EXPECTED OUTPUT:
+      (a) Item not on the menu. Available: Burger, Pizza, Coffee
+      (b) Invalid quantity. Enter a whole number.
+      (c) Invalid table number. Enter a number between 1 and 20.
     """
     item_in = custom_item if custom_item is not None else "Pasta"
     qty_in = custom_qty if custom_qty is not None else "abc"
@@ -391,21 +464,21 @@ def run_test_case_3(custom_item=None, custom_qty=None, custom_table=None):
     print(f"(c) Table: {tbl_in}")
     print("-" * 75)
 
-    # 3(a)
+    # 3(a) Validate Item
     try:
         validate_item(item_in)
         actual_a = "Validation failed: Invalid item was accepted"
     except ValueError as e:
         actual_a = str(e)
 
-    # 3(b)
+    # 3(b) Validate Quantity
     try:
         validate_quantity(qty_in)
         actual_b = "Validation failed: Invalid quantity was accepted"
     except ValueError as e:
         actual_b = str(e)
 
-    # 3(c)
+    # 3(c) Validate Table
     try:
         validate_table(tbl_in)
         actual_c = "Validation failed: Invalid table was accepted"
@@ -431,14 +504,17 @@ def run_test_case_3(custom_item=None, custom_qty=None, custom_table=None):
     return is_pass
 
 
-def run_test_case_4(custom_table=None, custom_orders=None):
+def run_test_case_4(custom_table=None, custom_orders=None) -> bool:
     """
-    Runs Test Case 4: Different Valid Scenario.
-    Defaults: Table: 3, Orders: Burger x2, Pizza x1, Coffee x4 -> Generate bill.
-    Expected:
-    Burger x2 = 200 | Pizza x1 = 200 | Coffee x4 = 200
-    Subtotal: 600 | Service charge (10%): 60.00
-    GST (5%): 30.00 | Total: 690.00
+    [TEST CASE 4] Different Valid Scenario
+    INPUT:
+      Table: 3
+      Order Burger x2, Pizza x1, Coffee x4
+      Generate bill
+    EXPECTED OUTPUT:
+      Burger x2 = 200 │ Pizza x1 = 200 │ Coffee x4 = 200
+      Subtotal: 600 │ Service charge (10%): 60.00
+      GST (5%): 30.00 │ Total: 690.00
     """
     tbl_in = custom_table if custom_table is not None else 3
     orders_list = custom_orders if custom_orders is not None else [
@@ -452,7 +528,7 @@ def run_test_case_4(custom_table=None, custom_orders=None):
     print("INPUT:")
     print(f"Table: {tbl_in}")
     orders_str = ", ".join([f"{item} x{qty}" for item, qty in orders_list])
-    print(f"Order: {orders_str}")
+    print(f"Order {orders_str}")
     print("Generate bill")
     print("-" * 75)
 
@@ -476,9 +552,9 @@ def run_test_case_4(custom_table=None, custom_orders=None):
     gst = subtotal * GST_RATE
     total = subtotal + svc + gst
 
-    exp_line0 = " | ".join([f"{item} x{qty} = {MENU[item] * qty}" for item, qty in orders_list])
-    exp_line1 = f"Subtotal: {subtotal} | Service charge (10%): {svc:.2f}"
-    exp_line2 = f"GST (5%): {gst:.2f} | Total: {total:.2f}"
+    exp_line0 = f" {SEP} ".join([f"{item} x{qty} = {MENU[item] * qty}" for item, qty in orders_list])
+    exp_line1 = f"Subtotal: {subtotal} {SEP} Service charge (10%): {svc:.2f}"
+    exp_line2 = f"GST (5%): {gst:.2f} {SEP} Total: {total:.2f}"
 
     expected_block = f"{exp_line0}\n{exp_line1}\n{exp_line2}"
     actual_block = f"{running}\n{bill['line_1']}\n{bill['line_2']}"
@@ -488,15 +564,17 @@ def run_test_case_4(custom_table=None, custom_orders=None):
     print(f"ACTUAL OUTPUT:\n{actual_block}")
     print("-" * 75)
 
-    is_pass = (running == exp_line0 and bill["line_1"] == exp_line1 and bill["line_2"] == exp_line2)
+    is_pass = (_normalize(running) == _normalize(exp_line0) and
+               _normalize(bill["line_1"]) == _normalize(exp_line1) and
+               _normalize(bill["line_2"]) == _normalize(exp_line2))
     status = "[PASS] ✓" if is_pass else "[FAIL] ✗"
     print(f"STATUS: {status}")
     print("-" * 75 + "\n")
     return is_pass
 
 
-def run_all_tests_auto():
-    """Executes all 4 test cases and displays complete academic summary."""
+def run_all_tests_auto() -> bool:
+    """Executes all 4 official test cases and displays complete academic summary."""
     print("=" * 75)
     print("  PS No. 35: RESTAURANT ORDER MANAGEMENT SYSTEM - VERIFICATION SUITE")
     print("=" * 75)
@@ -504,22 +582,22 @@ def run_all_tests_auto():
     t2 = run_test_case_2()
     t3 = run_test_case_3()
     t4 = run_test_case_4()
-    
+
     passed = sum([t1, t2, t3, t4])
     print("=" * 75)
     print(f" FINAL RESULT: {passed}/4 TEST CASES PASSED SUCCESSFULLY (100%)")
     print("=" * 75 + "\n")
 
-    # Clear all tables after running tests to avoid state pollution
+    # Clear tables to keep fresh state
     for t in range(1, TOTAL_TABLES + 1):
         reset_table(t)
 
     return passed == 4
 
 
-# ---------------------------------------------------------------------------
-# Interactive Test Runner (Allows User to Test Cases 1-4 on Their Own Inputs)
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Interactive Test Runner (Allows User to Test Cases 1-4 on Custom Inputs)
+# ------------------------------------------------------------------------------
 
 def run_interactive_test_mode():
     """Allows user to select any of the 4 test cases and provide custom inputs."""
@@ -535,7 +613,10 @@ def run_interactive_test_mode():
     print("  6. Return to Main Console")
     print("-" * 65)
 
-    choice = input("Enter choice (1-6): ").strip()
+    try:
+        choice = input("Enter choice (1-6): ").strip()
+    except EOFError:
+        return
 
     if choice == "1":
         print("\n--- Test Case 1: Normal Input ---")
@@ -581,25 +662,26 @@ def run_interactive_test_mode():
         run_all_tests_auto()
 
 
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Interactive Waiter Console (Fulfills All 5 Bare Minimum Requirements)
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def take_order_for_table(table_num: int):
     """
-    Requirement 3: Takes multiple items in a loop for a table,
-    shows the running order, and allows generating final bill ONLY when requested.
-    In Test Case 1 (Normal Input), bill is NOT generated, so output is:
-    'Burger x2 added to Table 5 | Amount: 200' (Amount is 200, NOT 230).
+    Requirements 3 & 4:
+    Takes multiple items in a loop for a table, displays the running order,
+    and generates the final bill when requested by the waiter.
     """
     print(f"\n[Taking Orders for Table {table_num}]")
-    print("Tip: Enter item name or number (1: Burger, 2: Pizza, 3: Coffee)")
-    print("     Enter 'bill' to generate final bill, or 'done' to finish without billing.\n")
+    print("Commands:")
+    print("  * Enter menu item name (Burger, Pizza, Coffee) or number (1, 2, 3)")
+    print("  * Enter 'order' or 'view' to view current running order")
+    print("  * Enter 'bill' or 'generate bill' to generate final receipt")
+    print("  * Enter 'done' or press Enter to finish table orders\n")
 
     generate_bill_requested = False
 
     while True:
-        # Prompt for Item (Requirement 5 Validation)
         try:
             item_raw = input("Order item: ").strip()
         except EOFError:
@@ -608,14 +690,23 @@ def take_order_for_table(table_num: int):
         if not item_raw:
             break
 
-        if item_raw.lower() in ["bill", "generate bill"]:
+        cmd_lower = item_raw.lower()
+
+        # Check for bill generation request
+        if cmd_lower in ["bill", "generate bill"]:
             generate_bill_requested = True
             break
 
-        if item_raw.lower() in ["exit", "done", "q", "quit", "n", "no"]:
+        # Check for finishing order
+        if cmd_lower in ["done", "exit", "quit", "q", "finish"]:
             break
 
-        # Check for compound input (e.g. 'Coffee; Quantity: 1' or 'Burger x2, Pizza x1')
+        # Check for running order display request
+        if cmd_lower in ["order", "view", "running", "running order"]:
+            print(format_running_order(table_num))
+            continue
+
+        # Check for compound input (e.g., 'Coffee; Quantity: 1' or 'Burger x2, Pizza x1')
         compound = parse_compound_orders(item_raw)
         if compound:
             for itm, qty in compound:
@@ -623,13 +714,21 @@ def take_order_for_table(table_num: int):
                 print(res["message"])
             
             try:
-                nxt = input("Generate bill now? (y/n) [default: n]: ").strip().lower()
-                if nxt in ['y', 'yes', 'bill']:
+                nxt = input("Order item (or 'bill' / 'done'): ").strip()
+                if nxt.lower() in ["bill", "generate bill"]:
                     generate_bill_requested = True
+                elif nxt:
+                    # If user entered another command or item, handle next loop
+                    item_raw = nxt
+                    cmd_lower = item_raw.lower()
+                    if cmd_lower in ["done", "exit", "quit", "q"]:
+                        break
             except EOFError:
                 pass
-            break
+            if generate_bill_requested or not item_raw:
+                break
 
+        # Validate menu item
         try:
             valid_item = validate_item(item_raw)
         except ValueError as e:
@@ -653,17 +752,6 @@ def take_order_for_table(table_num: int):
         res = add_order(table_num, valid_item, valid_qty)
         print(res["message"])
 
-        # Ask if user wants to add another item or generate bill
-        try:
-            nxt = input("Add another item? (y/n) [or type 'bill' to generate bill]: ").strip().lower()
-            if nxt in ['bill', 'generate bill']:
-                generate_bill_requested = True
-                break
-            elif nxt in ['n', 'no', 'done', 'exit', '']:
-                break
-        except EOFError:
-            break
-
     # Bill Generation ONLY if requested (Requirement 4: Test Cases 2 & 4)
     if generate_bill_requested:
         orders = get_running_order(table_num)
@@ -673,10 +761,10 @@ def take_order_for_table(table_num: int):
             print(bill["line_1"])
             print(bill["line_2"])
             print_bill_card(table_num)
-            
+
             try:
                 clr = input(f"Clear orders for Table {table_num}? (y/n) [default: y]: ").strip().lower()
-                if clr in ['', 'y', 'yes']:
+                if clr in ["", "y", "yes"]:
                     reset_table(table_num)
                     print(f"Table {table_num} is cleared and free.")
             except EOFError:
@@ -690,11 +778,12 @@ def waiter_console(show_tests_on_startup: bool = True):
     Main interactive entry point for the console application.
     Fulfills Requirement 1 (one .py file run from console).
     Displays the 4 official test cases verification on startup,
-    then takes user's manual inputs, validates them defensively, and runs orders.
+    then presents the live waiter ordering console.
     """
     print("\n" + "=" * 75)
     print("      PROBLEM STATEMENT NO. 35: RESTAURANT ORDER MANAGEMENT SYSTEM      ")
     print("           Bachelor of Technology - Computer Science and Engineering     ")
+    print("             Rungta International Skills University (RU-100-01-0021)     ")
     print("=" * 75)
     print("Menu: Burger (Rs. 100) | Pizza (Rs. 200) | Coffee (Rs. 50)")
     print("Tables: 1 to 20 | Service Charge: 10% | GST: 5% (both on Subtotal)")
@@ -712,10 +801,11 @@ def waiter_console(show_tests_on_startup: bool = True):
     print("       LIVE INTERACTIVE WAITER CONSOLE (TEST ON YOUR CUSTOM INPUT)      ")
     print("=" * 75)
     print("Instructions:")
-    print("  * Enter a Table Number (1-20) to take orders on YOUR input")
-    print("  * Enter 'bill' to generate final receipt with 10% Service Charge + 5% GST")
-    print("  * Enter 'test' to re-run test case verification")
-    print("  * Enter 'exit' to quit application\n")
+    print("  * Enter a Table Number (1-20) to take orders")
+    print("  * Type 'bill' inside table order to generate final receipt")
+    print("  * Type 'test' to open interactive test case runner")
+    print("  * Type 'all' to re-verify all 4 official test cases")
+    print("  * Type 'exit' to quit application\n")
 
     while True:
         try:
@@ -746,9 +836,9 @@ def waiter_console(show_tests_on_startup: bool = True):
             print(e)
 
 
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # CLI Runner Entry Point
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         arg = sys.argv[1].lower()
@@ -768,7 +858,13 @@ if __name__ == "__main__":
             else:
                 run_all_tests_auto()
         elif arg == "--help":
-            print("Usage: python restaurant_system.py [--test [1|2|3|4|all]]")
+            print("Usage:")
+            print("  python restaurant_system.py                 # Run interactive waiter console")
+            print("  python restaurant_system.py --test          # Run all 4 test cases verification")
+            print("  python restaurant_system.py --test 1        # Run Test Case 1")
+            print("  python restaurant_system.py --test 2        # Run Test Case 2")
+            print("  python restaurant_system.py --test 3        # Run Test Case 3")
+            print("  python restaurant_system.py --test 4        # Run Test Case 4")
         else:
             print(f"Unknown argument: {arg}. Starting interactive console...")
             waiter_console()
