@@ -41,6 +41,7 @@ restaurant-order-management-system/
 ├── restaurant_system.py       # Main Python 3 application & test runner
 ├── README.md                  # Project overview & running instructions
 ├── summary.md                 # Academic project report & technical summary
+├── test_case_1.png            # Test Case 1 terminal execution screenshot
 ├── test_case_2.png            # Test Case 2 terminal execution screenshot
 └── .gitignore                 # Standard Python gitignore
 ```
@@ -105,6 +106,8 @@ PS E:\python project resturent order management system> python restaurant_system
 * **Input**: Table: `5`, Item: `Burger`, Quantity: `2`
 * **Output**: `Burger x2 added to Table 5 │ Amount: 200`
 * **Result**: **PASS**
+
+![Test Case 1 Terminal Output](test_case_1.png)
 
 #### Test Case 2: Boundary / Minimum Input
 * **Input**: Table: `1`, Item: `Coffee`, Quantity: `1` -> Generate bill
