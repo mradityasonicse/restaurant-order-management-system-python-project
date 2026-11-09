@@ -109,8 +109,6 @@ PS E:\python project resturent order management system> python restaurant_system
 * **Output**: `Burger x2 added to Table 5 │ Amount: 200`
 * **Result**: **PASS**
 
-![Test Case 1 Terminal Output](test_case_1.png)
-
 #### Test Case 2: Boundary / Minimum Input
 * **Input**: Table: `1`, Item: `Coffee`, Quantity: `1` -> Generate bill
 * **Output**:
@@ -120,16 +118,12 @@ PS E:\python project resturent order management system> python restaurant_system
   ```
 * **Result**: **PASS**
 
-![Test Case 2 Terminal Output](test_case_2.png)
-
 #### Test Case 3: Invalid Input Validation
 * **Inputs Tested**:
   * Item not on menu: `Pasta` -> Rejection message with available items
   * Invalid quantity: `abc` -> Prompts for whole number
   * Invalid table number: `0` -> Prompts for table between 1 and 20
 * **Result**: **PASS** (Defensive checks protect against crashes)
-
-![Test Case 3 Terminal Output](test_case_3.png)
 
 #### Test Case 4: Different Valid Scenario
 * **Input**: Table: `3`, Items: `Burger x2`, `Pizza x1`, `Coffee x4` -> Generate bill
@@ -140,8 +134,6 @@ PS E:\python project resturent order management system> python restaurant_system
   GST (5%): 30.00 │ Total: 690.00
   ```
 * **Result**: **PASS**
-
-![Test Case 4 Terminal Output](test_case_4.png)
 
 ---
 
