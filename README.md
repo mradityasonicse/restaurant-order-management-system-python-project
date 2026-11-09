@@ -41,6 +41,7 @@ restaurant-order-management-system/
 ├── restaurant_system.py       # Main Python 3 application & test runner
 ├── README.md                  # Project overview & running instructions
 ├── summary.md                 # Academic project report & technical summary
+├── test_case_2.png            # Test Case 2 terminal execution screenshot
 └── .gitignore                 # Standard Python gitignore
 ```
 
@@ -113,6 +114,8 @@ PS E:\python project resturent order management system> python restaurant_system
   GST (5%): 2.50 │ Total: 57.50
   ```
 * **Result**: **PASS**
+
+![Test Case 2 Terminal Output](test_case_2.png)
 
 #### Test Case 3: Invalid Input Validation
 * **Inputs Tested**:
