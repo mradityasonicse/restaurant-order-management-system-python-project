@@ -39,9 +39,8 @@ The system handles daily restaurant table management, order taking, running orde
 ```
 restaurant-order-management-system/
 ├── restaurant_system.py       # Main Python 3 application & test runner
-├── terminal_test_pass.png     # VS Code terminal screenshot (tests passing)
 ├── README.md                  # Project overview & running instructions
-├── summary.md                 # Quick revision and viva reference summary
+├── summary.md                 # Academic project report & technical summary
 └── .gitignore                 # Standard Python gitignore
 ```
 
@@ -81,11 +80,23 @@ python restaurant_system.py --test 4    # Test Case 4: Multi-item scenario
 
 ---
 
-## Test Verification in VS Code Terminal
+## Test Verification
 
 All 4 test cases pass with exact expected outputs:
 
-![VS Code Terminal - Test Cases Passing](terminal_test_pass.png)
+```text
+PS E:\python project resturent order management system> python restaurant_system.py --test
+===========================================================================
+  PS No. 35: RESTAURANT ORDER MANAGEMENT SYSTEM - VERIFICATION SUITE
+===========================================================================
+[TEST CASE 1] Normal Input        -> [PASS] (Burger x2 added to Table 5 │ Amount: 200)
+[TEST CASE 2] Boundary Input      -> [PASS] (Subtotal: 50 │ Service charge: 5.00 │ GST: 2.50 │ Total: 57.50)
+[TEST CASE 3] Invalid Validation  -> [PASS] (Rejected unknown item, invalid quantity, and table 0)
+[TEST CASE 4] Multi-Item Scenario -> [PASS] (Burger x2, Pizza x1, Coffee x4 │ Total: 690.00)
+===========================================================================
+ FINAL RESULT: 4/4 TEST CASES PASSED SUCCESSFULLY (100%)
+===========================================================================
+```
 
 ### Summary of Test Scenarios
 
