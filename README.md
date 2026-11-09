@@ -44,6 +44,7 @@ restaurant-order-management-system/
 ├── test_case_1.png            # Test Case 1 terminal execution screenshot
 ├── test_case_2.png            # Test Case 2 terminal execution screenshot
 ├── test_case_3.png            # Test Case 3 terminal execution screenshot
+├── test_case_4.png            # Test Case 4 terminal execution screenshot
 └── .gitignore                 # Standard Python gitignore
 ```
 
@@ -139,6 +140,8 @@ PS E:\python project resturent order management system> python restaurant_system
   GST (5%): 30.00 │ Total: 690.00
   ```
 * **Result**: **PASS**
+
+![Test Case 4 Terminal Output](test_case_4.png)
 
 ---
 
