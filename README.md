@@ -43,6 +43,7 @@ restaurant-order-management-system/
 ├── summary.md                 # Academic project report & technical summary
 ├── test_case_1.png            # Test Case 1 terminal execution screenshot
 ├── test_case_2.png            # Test Case 2 terminal execution screenshot
+├── test_case_3.png            # Test Case 3 terminal execution screenshot
 └── .gitignore                 # Standard Python gitignore
 ```
 
@@ -126,6 +127,8 @@ PS E:\python project resturent order management system> python restaurant_system
   * Invalid quantity: `abc` -> Prompts for whole number
   * Invalid table number: `0` -> Prompts for table between 1 and 20
 * **Result**: **PASS** (Defensive checks protect against crashes)
+
+![Test Case 3 Terminal Output](test_case_3.png)
 
 #### Test Case 4: Different Valid Scenario
 * **Input**: Table: `3`, Items: `Burger x2`, `Pizza x1`, `Coffee x4` -> Generate bill

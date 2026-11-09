@@ -194,6 +194,8 @@ All monetary amounts are displayed with two decimal places (`{amount:.2f}`) to p
   ```
 * **Result**: **PASS**
 
+![Test Case 3 Terminal Output](test_case_3.png)
+
 ---
 
 ### Test Case 4: Different Valid Scenario
