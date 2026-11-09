@@ -162,4 +162,4 @@ PS E:\python project resturent order management system> python restaurant_system
 * **Course**: Programming Fundamentals and Logic Building Using Python (RU-100-01-0021)
 * **Program**: B.Tech CSE (First Semester, Section K)
 * **Problem Statement**: PS No. 35
-* **Author**: Abhinav Tripathi
+* **Author**: Aditya Soni

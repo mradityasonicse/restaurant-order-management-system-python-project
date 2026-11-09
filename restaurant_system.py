@@ -10,6 +10,7 @@ Date of Allocation : 14th October 2026
 Date of Submission : 16th November 2026
 Problem Statement  : PS No. 35
 Project Title      : Restaurant Order Management System
+Author             : Aditya Soni
 Core Concepts      : Lists, Dictionaries, Loops, Input Validation, Tax & Billing
 ================================================================================
 
