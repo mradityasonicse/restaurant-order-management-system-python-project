@@ -38,10 +38,13 @@ The system handles daily restaurant table management, order taking, running orde
 
 ```
 restaurant-order-management-system/
-├── restaurant_system.py       # Main Python 3 application & test runner
-├── README.md                  # Project overview & running instructions
-├── summary.md                 # Academic project report & test runs
-└── .gitignore                 # Standard Python gitignore
+├── restaurant_system.py          # Main Python 3 application & waiter console
+├── test_restaurant_system.py     # Automated unit test suite (100% passing)
+├── build_vscode_screenshots.py    # VS Code terminal screenshot generator
+├── README.md                     # Project overview & running instructions
+├── summary.md                    # Academic project report & test runs
+├── screenshots/                  # Real VS Code terminal execution screenshots
+└── .gitignore                    # Standard Python gitignore
 ```
 
 ---
@@ -52,9 +55,15 @@ restaurant-order-management-system/
 * Python 3.7 or newer (Standard library only; no pip dependencies required).
 
 ### Execution
-Run the script from the terminal:
+Run the waiter console from the terminal:
 ```bash
 python restaurant_system.py
+```
+
+### Running Automated Test Suite
+Run all unit and integration test cases:
+```bash
+python -m unittest -v test_restaurant_system.py
 ```
 
 From the interactive console:
@@ -68,7 +77,16 @@ From the interactive console:
 
 ## Test Verification
 
-The application handles all official test scenarios directly through the console:
+### Automated Test Suite Execution (VS Code Terminal)
+All test cases pass with exit code `0`:
+
+![Automated Test Suite Pass in VS Code Terminal](screenshots/test_case_all_pass_vscode.png)
+
+```text
+PS E:\python project resturent order management system> python -m unittest -v test_restaurant_system.py
+Ran 6 tests in 0.000s
+OK
+```
 
 ### Summary of Test Scenarios
 

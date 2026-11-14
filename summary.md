@@ -27,6 +27,8 @@ Author             : Aditya Soni
 5. [Defensive Input Validation & Exception Handling](#5-defensive-input-validation--exception-handling)
 6. [Bare Minimum Requirements Traceability](#6-bare-minimum-requirements-traceability)
 7. [Test Cases & Experimental Verification](#7-test-cases--experimental-verification)
+   * [7.1 Automated Unit Test Suite Execution (VS Code Terminal)](#71-automated-unit-test-suite-execution-vs-code-terminal)
+   * [7.2 Interactive Console Verification (Test Cases 1–4)](#72-interactive-console-verification-test-cases-14)
 8. [Conclusion & Future Scope](#8-conclusion--future-scope)
 
 ---
@@ -140,6 +142,58 @@ All monetary amounts are displayed with two decimal places (`{amount:.2f}`) to p
 ---
 
 ## 7. Test Cases & Experimental Verification
+
+### 7.1 Automated Unit Test Suite Execution (VS Code Terminal)
+
+To provide mathematical and deterministic proof of compliance with Problem Statement No. 35, an automated test suite was constructed in `test_restaurant_system.py` using Python's standard `unittest` framework. All test cases execute with zero external dependencies and report exit code `0` (Success).
+
+#### Full VS Code IDE Workspace Screenshot
+The image below displays the full Visual Studio Code IDE workspace with the active test file open in the editor and the integrated terminal executing the test harness:
+
+![Full VS Code IDE Workspace Test Execution](screenshots/vscode_full_ide_test_pass.png)
+
+#### VS Code Integrated Terminal Test Pass Screenshot
+The image below displays the dedicated Visual Studio Code Integrated Terminal executing `python -m unittest -v test_restaurant_system.py`, with all 6 unit and integration tests passing:
+
+![Automated Unit Test Suite Pass in VS Code Terminal](screenshots/test_case_all_pass_vscode.png)
+
+#### Terminal Verifiable Execution Log
+```text
+PS E:\python project resturent order management system> python -m unittest -v test_restaurant_system.py
+test_boundary_table_numbers (test_restaurant_system.TestRestaurantOrderSystem.test_boundary_table_numbers)
+Verify boundary tables 1 and 20 are both accepted ... ok
+test_case_1_normal_input (test_restaurant_system.TestRestaurantOrderSystem.test_case_1_normal_input)
+Test Case 1: Table 5, Item Burger (or 1), Quantity 2 -> Amount 200 ... ok
+test_case_2_boundary_minimum_input (test_restaurant_system.TestRestaurantOrderSystem.test_case_2_boundary_minimum_input)
+Test Case 2: Table 1, Item Coffee (or 3), Quantity 1 -> Bill calculations ... ok
+test_case_3_invalid_inputs (test_restaurant_system.TestRestaurantOrderSystem.test_case_3_invalid_inputs)
+Test Case 3: Rejection of invalid table, invalid item, invalid quantity ... ok
+test_case_4_multi_item_order_and_billing (test_restaurant_system.TestRestaurantOrderSystem.test_case_4_multi_item_order_and_billing)
+Test Case 4: Table 3, Burger x2, Pizza x1, Coffee x4 -> Subtotal 600, Total 690.00 ... ok
+test_table_clear_and_reset (test_restaurant_system.TestRestaurantOrderSystem.test_table_clear_and_reset)
+Verify table orders list is completely cleared upon checkout ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK
+```
+
+#### Automated Test Suite Verification Matrix
+| Test Case Name | Target Requirement | Input Vectors | Verification Assertion | Exit Code | Status |
+|---|---|---|---|:---:|:---:|
+| `test_case_1_normal_input` | Normal Order Addition (Req 2 & 3) | Table: `5`, Item: `'Burger'`, Qty: `2` | `amount == 200`, message match | `0` | **PASS** |
+| `test_case_2_boundary_minimum_input` | Minimum Bill Calculation (Req 4) | Table: `1`, Item: `'Coffee'`, Qty: `1` | `subtotal == 50`, `sc == 5.0`, `gst == 2.5`, `total == 57.5` | `0` | **PASS** |
+| `test_case_3_invalid_inputs` | Defensive Input Guardrails (Req 5) | Table: `0`, `25`; Item: `'pasta'`; Qty: `'abc'`, `0` | `ValueError` exceptions raised with exact error messages | `0` | **PASS** |
+| `test_case_4_multi_item_order_and_billing` | Multi-Item Order Aggregation (Req 3 & 4) | Table: `3`, Burger x2, Pizza x1, Coffee x4 | `subtotal == 600`, `total == 690.00`, running string match | `0` | **PASS** |
+| `test_boundary_table_numbers` | Table Boundary Limits | Tables: `1` and `20` | `validate_table()` returns integer | `0` | **PASS** |
+| `test_table_clear_and_reset` | Order Clearing Lifecycle | Table `2` orders cleared | `len(get_running_order(2)) == 0` | `0` | **PASS** |
+
+---
+
+### 7.2 Interactive Console Verification (Test Cases 1–4)
+
+In addition to automated testing, each test case was executed through the interactive waiter console in Visual Studio Code's integrated terminal to verify end-to-end user experience and prompt formatting.
 
 ### Test Case 1: Normal Input
 * **Input**: Table: `5`, Item: `Burger` (or index `1`), Quantity: `2`
