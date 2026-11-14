@@ -40,7 +40,6 @@ The system handles daily restaurant table management, order taking, running orde
 restaurant-order-management-system/
 ├── restaurant_system.py          # Main Python 3 application & waiter console
 ├── test_restaurant_system.py     # Automated unit test suite (100% passing)
-├── build_vscode_screenshots.py    # VS Code terminal screenshot generator
 ├── README.md                     # Project overview & running instructions
 ├── summary.md                    # Academic project report & test runs
 ├── screenshots/                  # Real VS Code terminal execution screenshots
