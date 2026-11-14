@@ -77,6 +77,8 @@ The application handles all official test scenarios directly through the console
 * **Output**: `Burger x2 added to Table 5 │ Amount: 200`
 * **Result**: **PASS**
 
+![Test Case 1 Terminal Screenshot](screenshots/test_case_1_normal.png)
+
 #### Test Case 2: Boundary / Minimum Input
 * **Input**: Table: `1`, Item: `Coffee`, Quantity: `1` -> Generate bill
 * **Output**:
@@ -86,12 +88,16 @@ The application handles all official test scenarios directly through the console
   ```
 * **Result**: **PASS**
 
+![Test Case 2 Terminal Screenshot](screenshots/test_case_2_boundary.png)
+
 #### Test Case 3: Invalid Input Validation
 * **Inputs Tested**:
   * Item not on menu: `Pasta` -> Rejection message with available items
   * Invalid quantity: `abc` -> Prompts for whole number
   * Invalid table number: `0` -> Prompts for table between 1 and 20
 * **Result**: **PASS** (Defensive checks protect against crashes)
+
+![Test Case 3 Terminal Screenshot](screenshots/test_case_3_invalid.png)
 
 #### Test Case 4: Different Valid Scenario
 * **Input**: Table: `3`, Items: `Burger x2`, `Pizza x1`, `Coffee x4` -> Generate bill
@@ -102,6 +108,8 @@ The application handles all official test scenarios directly through the console
   GST (5%): 30.00 │ Total: 690.00
   ```
 * **Result**: **PASS**
+
+![Test Case 4 Terminal Screenshot](screenshots/test_case_4_multi_item.png)
 
 ---
 

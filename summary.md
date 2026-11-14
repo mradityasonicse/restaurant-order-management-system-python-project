@@ -153,6 +153,9 @@ All monetary amounts are displayed with two decimal places (`{amount:.2f}`) to p
   ```
 * **Result**: **PASS**
 
+#### Terminal Execution Screenshot
+![Test Case 1: Normal Input Terminal Screenshot](screenshots/test_case_1_normal.png)
+
 ```text
 Table: 5
 
@@ -160,13 +163,16 @@ Table: 5
 Commands:
   * Enter menu item name (Burger, Pizza, Coffee) or number (1, 2, 3)
   * Enter 'order' or 'view' to view current running order
-  * Enter 'bill' or 'generate bill' to generate final receipt
-  * Enter 'done' or press Enter to finish table orders
+  * Enter 'bill' to generate final receipt
+  * Enter 'done' to finish table orders
 
 Order item: 1
 Quantity: 2
 Burger x2 added to Table 5 │ Amount: 200
-Order item: 
+Order item: done
+
+Table: exit
+Thank you for using Restaurant Order Management System. Goodbye!
 ```
 
 ---
@@ -185,6 +191,9 @@ Order item:
   ```
 * **Result**: **PASS**
 
+#### Terminal Execution Screenshot
+![Test Case 2: Boundary / Minimum Input Terminal Screenshot](screenshots/test_case_2_boundary.png)
+
 ```text
 Order item: 3
 Quantity: 1
@@ -195,20 +204,24 @@ Coffee x1 = 50
 Subtotal: 50 │ Service charge (10%): 5.00
 GST (5%): 2.50 │ Total: 57.50
 
-========================================================================
-                       FINAL BILL RECEIPT (PS No. 35)
-========================================================================
-  Table Number : 1
-------------------------------------------------------------------------
-  Item                     Qty     Price            Amount
-------------------------------------------------------------------------
-  Coffee                   x1      Rs.50            Rs.50
-------------------------------------------------------------------------
-  Subtotal: 50 │ Service charge (10%): 5.00
-  GST (5%): 2.50 │ Total: 57.50
-========================================================================
+======================================================
+            FINAL BILL RECEIPT (PS No. 35)            
+======================================================
+ Table Number : 1
+------------------------------------------------------
+ Item               Qty    Price        Amount    
+------------------------------------------------------
+ Coffee             x1     Rs.50        Rs.50
+------------------------------------------------------
+ Subtotal: 50 │ Service charge (10%): 5.00
+ GST (5%): 2.50 │ Total: 57.50
+======================================================
 
-Clear orders for Table 1? (y/n) [default: y]: 
+Clear orders for Table 1? (y/n) [default: y]: y
+Table 1 is cleared and free.
+
+Table: exit
+Thank you for using Restaurant Order Management System. Goodbye!
 ```
 
 ---
@@ -232,24 +245,32 @@ Clear orders for Table 1? (y/n) [default: y]:
   ```
 * **Result**: **PASS**
 
+#### Terminal Execution Screenshot
+![Test Case 3: Invalid Input Validation Terminal Screenshot](screenshots/test_case_3_invalid.png)
+
 ```text
 Table: 0
 Invalid table number. Enter a number between 1 and 20.
-Table: 1
 
+Table: 1
 [Taking Orders for Table 1]
 Commands:
   * Enter menu item name (Burger, Pizza, Coffee) or number (1, 2, 3)
   * Enter 'order' or 'view' to view current running order
-  * Enter 'bill' or 'generate bill' to generate final receipt
-  * Enter 'done' or press Enter to finish table orders
+  * Enter 'bill' to generate final receipt
+  * Enter 'done' to finish table orders
 
 Order item: pasta
 Item not on the menu. Available: Burger, Pizza, Coffee
 Order item: burger
 Quantity: abc
 Invalid quantity. Enter a whole number.
-Quantity: 
+Quantity: 1
+Burger x1 added to Table 1 │ Amount: 100
+Order item: done
+
+Table: exit
+Thank you for using Restaurant Order Management System. Goodbye!
 ```
 
 ---
@@ -270,6 +291,9 @@ Quantity:
   ```
 * **Result**: **PASS**
 
+#### Terminal Execution Screenshot
+![Test Case 4: Multi-Item Order and Billing Terminal Screenshot](screenshots/test_case_4_multi_item.png)
+
 ```text
 Order item: 1
 Quantity: 2
@@ -286,22 +310,26 @@ Burger x2 = 200 │ Pizza x1 = 200 │ Coffee x4 = 200
 Subtotal: 600 │ Service charge (10%): 60.00
 GST (5%): 30.00 │ Total: 690.00
 
-========================================================================
-                       FINAL BILL RECEIPT (PS No. 35)
-========================================================================
-  Table Number : 3
-------------------------------------------------------------------------
-  Item                     Qty     Price            Amount
-------------------------------------------------------------------------
-  Burger                   x2      Rs.100           Rs.200
-  Pizza                    x1      Rs.200           Rs.200
-  Coffee                   x4      Rs.50            Rs.200
-------------------------------------------------------------------------
-  Subtotal: 600 │ Service charge (10%): 60.00
-  GST (5%): 30.00 │ Total: 690.00
-========================================================================
+======================================================
+            FINAL BILL RECEIPT (PS No. 35)            
+======================================================
+ Table Number : 3
+------------------------------------------------------
+ Item               Qty    Price        Amount    
+------------------------------------------------------
+ Burger             x2     Rs.100       Rs.200
+ Pizza              x1     Rs.200       Rs.200
+ Coffee             x4     Rs.50        Rs.200
+------------------------------------------------------
+ Subtotal: 600 │ Service charge (10%): 60.00
+ GST (5%): 30.00 │ Total: 690.00
+======================================================
 
-Clear orders for Table 3? (y/n) [default: y]: 
+Clear orders for Table 3? (y/n) [default: y]: y
+Table 3 is cleared and free.
+
+Table: exit
+Thank you for using Restaurant Order Management System. Goodbye!
 ```
 
 ---
