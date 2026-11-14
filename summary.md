@@ -94,33 +94,11 @@ All financial values are formatted with two decimal precision (`{amount:.2f}`) t
 
 ---
 
-## 6. Verification & Test Execution
+## 6. Test Cases & Verification Scenarios
 
-### 6.1 Automated Test Suite Execution
-An automated test suite (`test_restaurant_system.py`) validates unit models, calculation invariants, and defensive exception handling:
+The system has been evaluated across the required operational test scenarios, verifying input handling, state isolation, tax computation, and output formatting:
 
-```text
-test_bill_calculation_rates_and_formatting (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_boundary_table_numbers (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_multi_item_order_subtotal_and_tax_aggregation (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_order_addition_and_item_state (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_order_aggregation_for_duplicate_items (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_table_clear_and_reset_lifecycle (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_validation_rejects_invalid_quantities (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_validation_rejects_invalid_tables (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-test_validation_rejects_unlisted_items (test_restaurant_system.TestRestaurantOrderSystem) ... ok
-
-----------------------------------------------------------------------
-Ran 9 tests in 0.001s
-
-OK
-```
-
----
-
-### 6.2 Assignment Test Cases & Terminal Verification
-
-#### Test Case 1: Normal Input
+### Test Case 1: Normal Input
 * **Scenario**: Table 5 orders 2 Burgers.
 * **Input**: Table: `5`, Item: `Burger`, Quantity: `2`
 * **Output**: `Burger x2 added to Table 5 │ Amount: 200`

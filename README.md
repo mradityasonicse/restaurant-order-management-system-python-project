@@ -54,7 +54,6 @@ $$\text{Grand Total} = \text{Subtotal} + \text{Service Charge} + \text{GST} = \t
 ```
 restaurant-order-management-system/
 ├── restaurant_system.py       # Core application, domain logic & waiter console
-├── test_restaurant_system.py  # Automated unit & integration test suite
 ├── README.md                  # System documentation & usage guide
 ├── summary.md                 # Technical design report & test verification
 ├── screenshots/               # Terminal execution captures
@@ -119,22 +118,18 @@ Table 5 is cleared and ready for new guests.
 
 ---
 
-## Automated Test Suite
+## Verification Matrix
 
-Run all unit and integration tests via Python's built-in `unittest` runner:
-```bash
-python -m unittest -v test_restaurant_system.py
-```
+The system is validated across normal operations, boundary limits, tax computations, and input rejection guardrails:
 
-### Verification Matrix
-| Test Case | Scope | Input Vector | Expected Output | Status |
+| Test Scenario | Scope | Input Vector | Expected Output | Status |
 |---|---|---|---|:---:|
-| `test_order_addition_and_item_state` | Single item addition | Table `5`, Burger x2 | Amount: `200` | **PASS** |
-| `test_order_aggregation_for_duplicate_items` | Quantity aggregation | Table `5`, Burger x2 + x3 | Burger x5, Amount: `500` | **PASS** |
-| `test_bill_calculation_rates_and_formatting` | Tax computation | Table `1`, Coffee x1 | Subtotal: `50`, Total: `57.50` | **PASS** |
-| `test_multi_item_order_subtotal_and_tax_aggregation` | Multi-item billing | Table `3`, Burger x2, Pizza x1, Coffee x4 | Subtotal: `600`, Total: `690.00` | **PASS** |
-| `test_boundary_table_numbers` | Boundary limits | Tables `1` and `20` | Accepted | **PASS** |
-| `test_validation_rejects_invalid_tables` | Range guardrails | `0`, `21`, `-1`, `"abc"` | `ValueError` raised | **PASS** |
-| `test_validation_rejects_unlisted_items` | Catalog enforcement | `"pasta"`, `"tea"`, `"99"` | `ValueError` raised | **PASS** |
-| `test_validation_rejects_invalid_quantities` | Quantity checks | `0`, `-5`, `"abc"`, `"1.5"` | `ValueError` raised | **PASS** |
-| `test_table_clear_and_reset_lifecycle` | Tab lifecycle | Settle Table `2` | Active orders reset to `0` | **PASS** |
+| **Test Case 1** | Single item addition | Table `5`, Burger x2 | Amount: `200` | **PASS** |
+| **Quantity Aggregation** | Re-order accumulation | Table `5`, Burger x2 + x3 | Burger x5, Amount: `500` | **PASS** |
+| **Test Case 2** | Minimum / Boundary billing | Table `1`, Coffee x1 | Subtotal: `50`, Total: `57.50` | **PASS** |
+| **Test Case 4** | Multi-item billing | Table `3`, Burger x2, Pizza x1, Coffee x4 | Subtotal: `600`, Total: `690.00` | **PASS** |
+| **Boundary Table IDs** | Table limits | Tables `1` and `20` | Accepted | **PASS** |
+| **Test Case 3 (Table)** | Range guardrails | `0`, `21`, `-1`, `"abc"` | `ValueError` raised | **PASS** |
+| **Test Case 3 (Item)** | Catalog enforcement | `"pasta"`, `"tea"`, `"99"` | `ValueError` raised | **PASS** |
+| **Test Case 3 (Quantity)**| Quantity checks | `0`, `-5`, `"abc"`, `"1.5"` | `ValueError` raised | **PASS** |
+| **Table Reset Lifecycle** | Checkout lifecycle | Settle Table `2` | Active orders reset to `0` | **PASS** |
