@@ -1,36 +1,51 @@
 # Restaurant Order Management System
 
-A Python console application developed for university coursework (Problem Statement 35: Restaurant Order Management System).
-
-The system handles daily restaurant table management, order taking, running order updates, and automatic bill calculation with service charge and GST.
+A production-grade, zero-dependency console application in Python 3 for restaurant table order dispatch, state management, and automated tax billing.
 
 ---
 
-## What the System Does
+## Architecture & System Design
 
-1. **Table Management**: Supports 20 tables (numbered 1 to 20).
-2. **Order Taking**: Waiters select a table and add items from the menu in a loop.
-3. **Running Order**: Inspect current orders placed on any table before final billing.
-4. **Automated Billing**: Computes Subtotal, 10% Service Charge, 5% GST, and Grand Total.
-5. **Input Validation**: Rejects invalid tables (e.g. 0 or >20), unlisted food items, and non-integer/negative quantities with helpful error messages.
-6. **Built-in Test Suite**: Contains automated test verification for all official evaluation test cases.
+The system is designed with a strict separation between domain state, financial calculations, input validation pipelines, and terminal presentation:
+
+```
+┌────────────────────────────────────────────────────────┐
+│                   CLI Controller                       │
+│    (Session dispatcher, command routing, exit handler) │
+└───────────────────────────┬────────────────────────────┘
+                            │
+            ┌───────────────┴───────────────┐
+            ▼                               ▼
+┌────────────────────────┐      ┌────────────────────────┐
+│  Validation Layer      │      │  Domain & State Layer  │
+│  - Table range (1-20)  │      │  - In-memory tabs O(1) │
+│  - Menu matching (O(1))│◄────►│  - Item aggregation    │
+│  - Quantity sanitizing │      │  - Tax & total engine  │
+└────────────────────────┘      └────────────────────────┘
+```
+
+### Key Architectural Characteristics
+* **In-Memory State Machine**: Tables (1–20) map to isolated order lists. Settling a table triggers an atomic state reset, freeing the table for new patrons.
+* **$O(1)$ Pricing Lookups**: The menu uses a hash map (`dict`) with constant-time lookup for prices and index resolution.
+* **Quantity Aggregation**: Re-ordering an existing item increments its quantity in place rather than creating duplicate row entries.
+* **Pure Financial Calculation**: `calculate_bill()` operates as a deterministic function with exact decimal string formatting.
 
 ---
 
-## Business Rules & Menu
+## Business Rules & Menu Catalog
 
-### Menu Items & Prices
-| Item | Price |
-|---|---|
-| Burger | Rs. 100 |
-| Pizza | Rs. 200 |
-| Coffee | Rs. 50 |
+### Menu Catalog
+| Item Code | Item Name | Unit Price (INR) |
+|:---:|:---|:---:|
+| `1` | **Burger** | Rs. 100 |
+| `2` | **Pizza**  | Rs. 200 |
+| `3` | **Coffee** | Rs. 50 |
 
-### Billing Formula
-* **Subtotal** = Sum of (Item Price × Quantity) for all ordered items
-* **Service Charge** = 10% on Subtotal (`Subtotal * 0.10`)
-* **GST** = 5% on Subtotal (`Subtotal * 0.05`)
-* **Total Bill** = Subtotal + Service Charge + GST (`Subtotal * 1.15`)
+### Financial Engine
+$$\text{Subtotal} = \sum_{i=1}^{n} (\text{Price}_i \times \text{Quantity}_i)$$
+$$\text{Service Charge} = \text{Subtotal} \times 0.10 \quad (10\%)$$
+$$\text{GST} = \text{Subtotal} \times 0.05 \quad (5\%)$$
+$$\text{Grand Total} = \text{Subtotal} + \text{Service Charge} + \text{GST} = \text{Subtotal} \times 1.15$$
 
 ---
 
@@ -38,125 +53,88 @@ The system handles daily restaurant table management, order taking, running orde
 
 ```
 restaurant-order-management-system/
-├── restaurant_system.py          # Main Python 3 application & waiter console
-├── test_restaurant_system.py     # Automated unit test suite (100% passing)
-├── README.md                     # Project overview & running instructions
-├── summary.md                    # Academic project report & test runs
-├── screenshots/                  # Real VS Code terminal execution screenshots
-└── .gitignore                    # Standard Python gitignore
+├── restaurant_system.py       # Core application, domain logic & waiter console
+├── test_restaurant_system.py  # Automated unit & integration test suite
+├── README.md                  # System documentation & usage guide
+├── summary.md                 # Technical design report & test verification
+├── screenshots/               # Terminal execution captures
+└── .gitignore                 # Standard Python gitignore
 ```
 
 ---
 
-## How to Run
+## Getting Started
 
-### Requirements
-* Python 3.7 or newer (Standard library only; no pip dependencies required).
+### Prerequisites
+* Python 3.7+ (Standard library only; zero external pip dependencies).
 
-### Execution
-Run the waiter console from the terminal:
+### Run the Application
+Launch the waiter console from the terminal:
 ```bash
 python restaurant_system.py
 ```
 
-### Running Automated Test Suite
-Run all unit and integration test cases:
+### Interactive Commands
+* Select a table: `Table: 5`
+* Add menu items: Type item name (`Burger`) or numeric index (`1`), then quantity (`2`).
+* Inspect running orders: Type `order` or `view`.
+* Settle and print receipt: Type `bill`.
+* Finish table session: Type `done`.
+* Exit console: Type `exit` or `q`.
+
+### Example Console Session
+```text
+Table: 5
+[Active Session: Table 5]
+Order item: 1
+Quantity: 2
+Burger x2 added to Table 5 │ Amount: 200
+
+Order item: 2
+Quantity: 1
+Pizza x1 added to Table 5 │ Amount: 200
+
+Order item: bill
+Burger x2 = 200 │ Pizza x1 = 200
+Subtotal: 400 │ Service charge (10%): 40.00
+GST (5%): 20.00 │ Total: 460.00
+
+══════════════════════════════════════════════════════
+               FINAL BILL RECEIPT               
+══════════════════════════════════════════════════════
+ Table Number : 5
+──────────────────────────────────────────────────────
+ Item               Qty    Price        Amount    
+──────────────────────────────────────────────────────
+ Burger             x2     Rs.100       Rs.200
+ Pizza              x1     Rs.200       Rs.200
+──────────────────────────────────────────────────────
+ Subtotal: 400 │ Service charge (10%): 40.00
+ GST (5%): 20.00 │ Total: 460.00
+══════════════════════════════════════════════════════
+
+Settle and clear Table 5? (y/n) [default: y]: y
+Table 5 is cleared and ready for new guests.
+```
+
+---
+
+## Automated Test Suite
+
+Run all unit and integration tests via Python's built-in `unittest` runner:
 ```bash
 python -m unittest -v test_restaurant_system.py
 ```
 
-From the interactive console:
-* Enter a table number (e.g. `5`) to select a table.
-* Enter menu item name (e.g. `Burger`) or number (`1`, `2`, `3`) and quantity.
-* Type `view` or `order` to inspect the running order.
-* Type `bill` to compute the total with 10% Service Charge + 5% GST and print the receipt.
-* Type `exit` to quit.
-
----
-
-## Test Verification
-
-### Automated Test Suite Execution (VS Code Terminal)
-All test cases pass with exit code `0`:
-
-![Automated Test Suite Pass in VS Code Terminal](screenshots/test_case_all_pass_vscode.png)
-
-```text
-PS E:\python project resturent order management system> python -m unittest -v test_restaurant_system.py
-Ran 6 tests in 0.000s
-OK
-```
-
-### Summary of Test Scenarios
-
-#### Test Case 1: Normal Input
-* **Input**: Table: `5`, Item: `Burger`, Quantity: `2`
-* **Output**: `Burger x2 added to Table 5 │ Amount: 200`
-* **Result**: **PASS**
-
-![Test Case 1 Terminal Screenshot](screenshots/test_case_1_normal.png)
-
-#### Test Case 2: Boundary / Minimum Input
-* **Input**: Table: `1`, Item: `Coffee`, Quantity: `1` -> Generate bill
-* **Output**:
-  ```text
-  Subtotal: 50 │ Service charge (10%): 5.00
-  GST (5%): 2.50 │ Total: 57.50
-  ```
-* **Result**: **PASS**
-
-![Test Case 2 Terminal Screenshot](screenshots/test_case_2_boundary.png)
-
-#### Test Case 3: Invalid Input Validation
-* **Inputs Tested**:
-  * Item not on menu: `Pasta` -> Rejection message with available items
-  * Invalid quantity: `abc` -> Prompts for whole number
-  * Invalid table number: `0` -> Prompts for table between 1 and 20
-* **Result**: **PASS** (Defensive checks protect against crashes)
-
-![Test Case 3 Terminal Screenshot](screenshots/test_case_3_invalid.png)
-
-#### Test Case 4: Different Valid Scenario
-* **Input**: Table: `3`, Items: `Burger x2`, `Pizza x1`, `Coffee x4` -> Generate bill
-* **Output**:
-  ```text
-  Burger x2 = 200 │ Pizza x1 = 200 │ Coffee x4 = 200
-  Subtotal: 600 │ Service charge (10%): 60.00
-  GST (5%): 30.00 │ Total: 690.00
-  ```
-* **Result**: **PASS**
-
-![Test Case 4 Terminal Screenshot](screenshots/test_case_4_multi_item.png)
-
----
-
-## Implementation Details
-
-### Data Structures
-1. **Menu (`MENU`)**: Stored as a Python dictionary (`dict`) with item names as keys and unit prices as integers. This gives constant-time $O(1)$ price lookups.
-   ```python
-   MENU = {
-       "Burger": 100,
-       "Pizza": 200,
-       "Coffee": 50
-   }
-   ```
-2. **Table Orders (`table_orders`)**: Stored as a dictionary mapping each table number (1 to 20) to a Python `list`. Each element in the list is an order dictionary containing `item`, `quantity`, `price`, and calculated `amount`.
-   ```python
-   table_orders = {t: [] for t in range(1, 21)}
-   ```
-   When a table settles their bill, the table's list is reset to `[]`, making the table available for the next customer.
-
-3. **Input Normalization**:
-   - Menu matching is case-insensitive (waiters can type `burger`, `BURGER`, or `1`).
-   - Quantities are strictly checked for whole numbers greater than 0.
-   - Table numbers must fall strictly between 1 and 20.
-
----
-
-## Academic Details
-
-* **Course**: Programming Fundamentals and Logic Building Using Python (RU-100-01-0021)
-* **Program**: B.Tech CSE (First Semester, Section K)
-* **Problem Statement**: PS No. 35
-* **Author**: Aditya Soni
+### Verification Matrix
+| Test Case | Scope | Input Vector | Expected Output | Status |
+|---|---|---|---|:---:|
+| `test_order_addition_and_item_state` | Single item addition | Table `5`, Burger x2 | Amount: `200` | **PASS** |
+| `test_order_aggregation_for_duplicate_items` | Quantity aggregation | Table `5`, Burger x2 + x3 | Burger x5, Amount: `500` | **PASS** |
+| `test_bill_calculation_rates_and_formatting` | Tax computation | Table `1`, Coffee x1 | Subtotal: `50`, Total: `57.50` | **PASS** |
+| `test_multi_item_order_subtotal_and_tax_aggregation` | Multi-item billing | Table `3`, Burger x2, Pizza x1, Coffee x4 | Subtotal: `600`, Total: `690.00` | **PASS** |
+| `test_boundary_table_numbers` | Boundary limits | Tables `1` and `20` | Accepted | **PASS** |
+| `test_validation_rejects_invalid_tables` | Range guardrails | `0`, `21`, `-1`, `"abc"` | `ValueError` raised | **PASS** |
+| `test_validation_rejects_unlisted_items` | Catalog enforcement | `"pasta"`, `"tea"`, `"99"` | `ValueError` raised | **PASS** |
+| `test_validation_rejects_invalid_quantities` | Quantity checks | `0`, `-5`, `"abc"`, `"1.5"` | `ValueError` raised | **PASS** |
+| `test_table_clear_and_reset_lifecycle` | Tab lifecycle | Settle Table `2` | Active orders reset to `0` | **PASS** |
